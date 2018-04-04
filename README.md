@@ -1,4 +1,4 @@
-This project was developed using Phaser, a javascript game engine. Developed to practice with client side scripting as well as machine learning. The AI utilizes a basic reinforcement learning algorithm, but could be improved using a neural network and a more accurate reward algorithm. Plan, and hope, to incorporate peer to peer multiplayer. Unfortunately this requires at least a signaling server, so has been delayed to reduce costs of the project.
+This project was developed using Phaser, a javascript game engine. Developed to practice with client side scripting as well as machine learning. The AI utilizes a basic reinforcement learning algorithm, but could be improved using a neural network and a more accurate reward algorithm. The plan, and hope, is to incorporate peer to peer multiplayer in the future as well as a neural network with an improved algorithm and reward system.
 
 Thanks to the following:
 - Pirate ship by Bleed - http://remusprites.carbonmade.com/
