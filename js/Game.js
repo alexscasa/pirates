@@ -39,6 +39,8 @@ var onScreen;
     
 var music = [];
 
+// to do -> will allow for learning based on context of action performed and
+//          not just the action and the result.
 var reinforcementTraining = [];
 
 var actions = [];
@@ -287,6 +289,17 @@ Pirates.Game.prototype = {
       obj2.destroy();
   },
   
+  
+  /***********************************************************************/
+  // Basic greedy reinforcement learning algorithm.                      //
+  // - Iterate through available actions                                 //
+  // -> check for action with higher reward than current action, 'greedy'//
+  // - Perform action with highest reward                                //
+  //                                                                     //
+  // * Actions are number 0-365 (default 0)                              //
+  //   0 - 360 are degrees of movement                                   //
+  //   361 - 365 are shooting directions (up, down, left, right)         //
+  /***********************************************************************/
   basicReinforcement: function(ship) {
       if(ship.controlledBy != 'player') {
         var length,
@@ -346,6 +359,13 @@ Pirates.Game.prototype = {
       }
   },
   
+  /***********************************************************************/
+  // Update the reward of taken action                                   //
+  // - If ship lost health from last action                              //
+  //    -> reduce actions reward                                         //
+  // - If ship repeats same move 25 times in a row                       //
+  //    -> reduce actions reward                                         //
+  /***********************************************************************/
   updateReward: function(ship) {
       if('pastHP' in ship) {
           if(ship.pastHP > ship.health) {
