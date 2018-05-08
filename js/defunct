@@ -1,0 +1,157 @@
+  // to do -> will allow for learning based on context of action performed and
+  //          not just the action and the result.
+  var reinforcementTraining = [];
+
+  //  will hold the reward value of greediest action (action with max reward)
+  var greedy = 0;
+  
+  //  add all available actions to array
+  //  assign actions with a random reward value
+  //  365 potential actions:
+  //   0 - 360 are degrees of movement
+  //   361 - 364 are combat instructions (shoot up, down, left, right)
+  //   365 is to do nothing
+  var actions = [];
+  for(var i = 0; i <= 365; i++) {
+    if(i <= 360) {
+      actions[i] = Math.random();
+    } else if(i == 361){
+      actions[i] = Math.random();
+    } else if(i == 362){
+      actions[i] = Math.random();
+    } else if(i == 363){
+      actions[i] = Math.random();
+    } else if(i == 364){
+        actions[i] = Math.random();
+    } else actions[i] = Math.random();
+  }
+  
+  /***********************************************************************/
+  // Basic greedy reinforcement learning algorithm.                      //
+  // - Iterate through available actions                                 //
+  // -> check for action with higher reward than current action, 'greedy'//
+  // - Perform action with highest reward                                //
+  //                                                                     //
+  // * Actions are number 0-365 (default 0)                              //
+  //   0 - 360 are degrees of movement                                   //
+  //   361 - 365 are shooting directions (up, down, left, right)         //
+  /***********************************************************************/
+  basicReinforcement: function(ship) {
+      if(ship.controlledBy != 'player') {
+        var length,
+            reward = actions[greedy];
+      
+        if(ship.reloadRemaining > 0){ length = 360;}
+        else { length = 365; }
+      
+        for(var i = 0; i <= length; i++) {
+            if(actions[i] > reward) {
+                greedy = i;
+                reward = actions[i];
+            }
+        }
+      
+        if(greedy <= 360) {
+            this.computerMove(ship, greedy);
+            ship.actionSequence.push(greedy);
+        }
+        else if(greedy == 361){
+            this.computerShoot(ship, 'up');
+            ship.actionSequence.push(greedy);
+        }
+        else if(greedy == 362){
+            this.computerShoot(ship, 'down');
+            ship.actionSequence.push(greedy);
+        }
+        else if(greedy == 363){
+            this.computerShoot(ship, 'left');
+            ship.actionSequence.push(greedy);
+        }
+        else if(greedy == 364){
+            this.computerShoot(ship, 'right');
+            ship.actionSequence.push(greedy);
+        }
+        else if(greedy == 365){
+            ship.actionSequence.push(greedy);
+        }
+      
+        this.updateReward(ship);
+      }
+  },
+  
+  // *** TO DO *** //
+  isEqual: function(actionSequence, reinforcementTraining) {
+      var similarityDiff,
+          mostSimilar,
+          testing;
+          
+      for(var i = 0; i < reinforcementTraining.length; i++) {
+          testing = reinforcementTraining[i];
+          for(var j = 0; j < actionSequence.length; j++) {
+              if(testing[i] == actionSequence[i]) {
+                  
+              }
+          }
+      }
+  },
+  
+  /***********************************************************************/
+  // Update the reward of taken action                                   //
+  // - If ship lost health from last action                              //
+  //    -> reduce actions reward                                         //
+  // - If ship repeats same move 25 times in a row                       //
+  //    -> reduce actions reward                                         //
+  /***********************************************************************/
+  updateReward: function(ship) {
+      if('pastHP' in ship) {
+          if(ship.pastHP > ship.health) {
+              for(var i = 0; i < ship.actionSequence.length; i++) {
+                  actions[ship.actionSequence[i]] *= ((ship.pastHP - ship.health) / 100); 
+              }
+          }
+          ship.pastHp = ship.health;
+      } else {
+          ship.pastHP = ship.health;
+      }
+      
+      var holder,
+          sameAction = false;
+      
+      if(ship.actionSequence.length % 25 == 0){
+        for(var i = ship.actionSequence.length - 5; i < ship.actionSequence.length - 1; i++) {
+            holder = ship.actionSequence[i];
+            if(holder == ship.actionSequence[i + 1]) {
+              sameAction = true;
+            }
+            else { 
+              i = ship.actionSequence.length;
+              sameAction = false;
+            }
+        }
+      }
+      
+      if(sameAction) {
+          actions[holder] *= 0.75; 
+      }
+  },
+  
+  victory: function() {
+      ships.forEach(function(ship) {
+        if(ship.loser) {
+            for(var i = 0; i < ship.actionSequence; i++) {
+              actions[ship.actionSequence[i]] *= 0.5;
+            }
+            ship.destroy();
+        }
+        else {
+            for(var i = 0; i < ship.actionSequence.length; i++) {
+              actions[ship.actionSequence[i]] = (actions[ship.actionSequence[i]] + 1) / 2; 
+            }
+            ship.destroy();
+        }
+      });
+      
+      this.spawnShip(2);
+  },
+  
+  

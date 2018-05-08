@@ -1,6 +1,6 @@
 var Pirates = Pirates || {};
 
-Pirates.game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '');
+Pirates.game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, '');
 
 Pirates.game.state.add('Boot', Pirates.Boot);
 Pirates.game.state.add('Preload', Pirates.Preload);
